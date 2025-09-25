@@ -3,10 +3,15 @@
 
 const addProduct= async(req,res)=>{
     try {
-        const {name, description, old_price, new_price, categroy}= req.body
-        if(!name || !description || !old_price || !new_price || !categroy){
-            res.status(500).send(`File all the requirements`)
+        const {name, description, old_price, new_price, category}= req.body
+        if(!name || !description || !old_price || !new_price || !category){
+            return res.status(400).send(`Fill all the requirements`)
         }
+        const newProduct={name, description, old_price, new_price, category}
+        res.status(200).send({
+            success: true,
+            payload: newProduct
+        })
 
         
     } catch (error) {
