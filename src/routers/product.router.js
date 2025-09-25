@@ -1,6 +1,10 @@
 const express = require('express')
+const multer= require('multer')
+const { addProduct } = require('../controllers/product.controller')
 
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 
 
@@ -12,6 +16,8 @@ productRouter.get('/', (req,res)=>{
 })
 
 
+
+productRouter.post('/addproduct', upload.single('image'), addProduct)
 
 
 
