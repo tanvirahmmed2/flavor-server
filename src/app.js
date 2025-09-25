@@ -1,6 +1,7 @@
 const express= require('express')
 const cors= require('cors')
 const productRouter = require('./routers/product.router')
+const userRouter = require('./controllers/user.controller')
 
 const app= express()
 
@@ -14,5 +15,6 @@ app.get('/', (req,res)=>{
 
 
 app.use('/product', productRouter)
+app.use('/user',userRouter)
 
 module.exports = app
