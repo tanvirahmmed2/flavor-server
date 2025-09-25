@@ -1,7 +1,7 @@
 const express= require('express')
 const cors= require('cors')
 const productRouter = require('./routers/product.router')
-const userRouter = require('./controllers/user.controller')
+const userRouter = require('./routers/user.router')
 
 const app= express()
 
