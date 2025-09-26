@@ -70,7 +70,14 @@ const loginUser = async (req, res) => {
     }
     const user = await User.findOne({ email }, { password: 0 }).lean()
     const token = jwt.sign(user, JWT_SECRET)
-    res.cookie("user_token", token, {
+    if (!user.isAdmin) {
+      res.cookie("user_token", token, {
+        httpOnly: false,   // allow access from frontend JS
+        secure: true,      // true if using https
+        sameSite: "strict" // prevent CSRF
+      });
+    }
+    res.cookie("admin_token", token, {
       httpOnly: false,   // allow access from frontend JS
       secure: true,      // true if using https
       sameSite: "strict" // prevent CSRF
@@ -96,22 +103,9 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   try {
-    const token = req.cookies.user_token
-    if (!token) {
-      return res.status(400).send({
-        success: false,
-        message: 'token not found'
-      })
-    }
-    res.clearCookie('user_token', {
-      httpOnly: false,  // must match the same options you used when setting it
-      secure: true,
-      sameSite: "strict"
-    });
-    res.status(200).send({
-      success: true,
-      message: 'logout successfully'
-    })
+    res.clearCookie("user_token", { path: "/" });
+    res.clearCookie("admin_token", { path: "/" });
+    res.status(200).send({ success: true, message: "Logged out" });
 
   } catch (error) {
     res.status(400).send({
