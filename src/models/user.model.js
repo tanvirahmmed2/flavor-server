@@ -21,6 +21,18 @@ const userSchema= new mongoose.Schema({
     password:{
         type: String,
         required: true
+    },
+    cartItem:{
+        type: Object,
+        default:[]
+    },
+    savedItem:{
+        type: Object,
+        default:[]
+    },
+    isAdmin:{
+        type:Boolean,
+        default: false,
     }
 })
 
