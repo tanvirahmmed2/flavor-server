@@ -37,6 +37,10 @@ const userSchema= new mongoose.Schema({
     isBanned:{
         type: Boolean,
         default: false,
+    },
+    order:{
+        type: Object,
+        default: [],
     }
 })
 
