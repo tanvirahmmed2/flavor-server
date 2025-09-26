@@ -44,6 +44,12 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body
+    if (!email || !password) {
+      return res.status(400).send({
+        success: false,
+        message: 'enter your email and password'
+      })
+    }
     const existUser = await User.findOne({ email: email })
     if (!existUser) {
       return res.status(400).send({
@@ -51,7 +57,20 @@ const loginUser = async (req, res) => {
         message: 'no user info found with this email'
       })
     }
-    
+    const isPasswordMatch = await bcrypt.compare(password, existUser.password);
+    if (!isPasswordMatch) {
+      return res.status(400).send({
+        success: false,
+        message: 'incorrect password'
+      })
+    }
+    res.status(200).send({
+      success: true,
+      message: 'logged in succefully',
+      payload: existUser
+    })
+
+
 
   } catch (error) {
     res.status(500).send({
