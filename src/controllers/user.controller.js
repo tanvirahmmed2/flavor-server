@@ -1,5 +1,9 @@
+require('dotenv').config()
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken')
 const User = require("../models/user.model");
+
+const JWT_SECRET = process.env.JWT_SECRET
 
 const registerUser = async (req, res) => {
   try {
@@ -64,10 +68,18 @@ const loginUser = async (req, res) => {
         message: 'incorrect password'
       })
     }
+    const user = await User.findOne({ email }, { password: 0 }).lean()
+    const token = jwt.sign(user, JWT_SECRET)
+    res.cookie("user_token", token, {
+      httpOnly: false,   // allow access from frontend JS
+      secure: true,      // true if using https
+      sameSite: "strict" // prevent CSRF
+    });
+
     res.status(200).send({
       success: true,
       message: 'logged in succefully',
-      payload: existUser
+      payload: token
     })
 
 
@@ -75,10 +87,39 @@ const loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).send({
       success: false,
-      message: error
+      message: 'error, login failed'
     })
 
   }
 }
 
-module.exports = { registerUser, loginUser };
+
+const logoutUser = async (req, res) => {
+  try {
+    const token = req.cookies.user_token
+    if (!token) {
+      return res.status(400).send({
+        success: false,
+        message: 'token not found'
+      })
+    }
+    res.clearCookie('user_token', {
+      httpOnly: false,  // must match the same options you used when setting it
+      secure: true,
+      sameSite: "strict"
+    });
+    res.status(200).send({
+      success: true,
+      message: 'logout successfully'
+    })
+
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      message: 'logout failed'
+    })
+
+  }
+
+}
+module.exports = { registerUser, loginUser, logoutUser };
