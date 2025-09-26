@@ -48,55 +48,73 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body
+
     if (!email || !password) {
-      return res.status(400).send({
+      return res.status(400).json({
         success: false,
-        message: 'enter your email and password'
+        message: 'Enter your email and password'
       })
     }
-    const existUser = await User.findOne({ email: email })
+
+    const existUser = await User.findOne({ email })
     if (!existUser) {
-      return res.status(400).send({
+      return res.status(400).json({
         success: false,
-        message: 'no user info found with this email'
+        message: 'No user found with this email'
       })
     }
-    const isPasswordMatch = await bcrypt.compare(password, existUser.password);
+
+    const isPasswordMatch = await bcrypt.compare(password, existUser.password)
     if (!isPasswordMatch) {
-      return res.status(400).send({
+      return res.status(400).json({
         success: false,
-        message: 'incorrect password'
+        message: 'Incorrect password'
       })
     }
-    const user = await User.findOne({ email }, { password: 0 }).lean()
-    const token = jwt.sign(user, JWT_SECRET)
-    if (!user.isAdmin) {
-      res.cookie("user_token", token, {
-        httpOnly: false,   // allow access from frontend JS
-        secure: true,      // true if using https
-        sameSite: "strict" // prevent CSRF
-      });
+
+    // Only keep safe fields
+    const user = {
+      _id: existUser._id,
+      email: existUser.email,
+      isAdmin: existUser.isAdmin
     }
-    res.cookie("admin_token", token, {
-      httpOnly: false,   // allow access from frontend JS
-      secure: true,      // true if using https
-      sameSite: "strict" // prevent CSRF
-    });
 
-    res.status(200).send({
+    // Sign token with limited payload
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      JWT_SECRET,
+      { expiresIn: '1d' } // optional expiry
+    )
+
+    // Set cookies properly
+    if (user.isAdmin) {
+      res.cookie("admin_token", token, {
+        httpOnly: true,   // safer
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
+      })
+    } else {
+      res.cookie("user_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict"
+      })
+    }
+
+    // Also send token in response (so frontend can use localStorage if needed)
+    res.status(200).json({
       success: true,
-      message: 'logged in succefully',
-      payload: token
+      message: 'Logged in successfully',
+      user,
+      token
     })
-
-
 
   } catch (error) {
-    res.status(500).send({
+    console.error(error)
+    res.status(500).json({
       success: false,
-      message: 'error, login failed'
+      message: 'Error, login failed'
     })
-
   }
 }
 
