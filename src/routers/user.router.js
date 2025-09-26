@@ -1,5 +1,6 @@
 const express = require('express')
 const { registerUser, loginUser, logoutUser } = require('../controllers/user.controller')
+const { LoggedIn } = require('../middlewares/user.middleware')
 
 
 
@@ -9,7 +10,7 @@ const userRouter= express.Router()
 
 userRouter.post('/signup', registerUser)
 userRouter.post('/signin', loginUser)
-userRouter.post('/signout', logoutUser)
+userRouter.post('/signout',LoggedIn, logoutUser)
 
 
 module.exports= userRouter

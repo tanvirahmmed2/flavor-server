@@ -1,6 +1,7 @@
 const express = require('express')
 const multer= require('multer')
-const { addProduct } = require('../controllers/product.controller')
+const { addProduct } = require('../controllers/product.controller');
+const { isAdmin } = require('../middlewares/user.middleware');
 
 
 const storage = multer.memoryStorage();
@@ -17,7 +18,7 @@ productRouter.get('/', (req,res)=>{
 
 
 
-productRouter.post('/addproduct', upload.single('image'), addProduct)
+productRouter.post('/addproduct', isAdmin, upload.single('image'), addProduct)
 
 
 
