@@ -32,19 +32,14 @@ const LoggedIn = async (req, res, next) => {
 
 const isAdmin = async (req, res, next) => {
     try {
-        const token = req.cookies.admin_token
-        if (!token) {
-            return res.status(500).send("token not found, login first")
+        const user= req.user
+        if(!user.isAdmin){
+           return res.status(200).send("You're not an admin")
         }
-        const decoded= await jwt.verify(token, process.env.JWT_SECRET)
-        if(!decoded){
-            return res.status(500).send("invalid token")
-        }
-        req.user = decoded
         next()
 
     } catch (error) {
-        res.status(500).send(error + "token not found")
+        res.status(500).send(error + "admin verfification failed")
 
     }
 }

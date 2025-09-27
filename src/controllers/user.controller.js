@@ -73,17 +73,12 @@ const loginUser = async (req, res) => {
     }
 
     // Only keep safe fields
-    const user = {
-      _id: existUser._id,
-      email: existUser.email,
-      isAdmin: existUser.isAdmin
-    }
+    const user = await User.findOne({email:email}).select({password: 0}).lean()
 
     // Sign token with limited payload
     const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin },
-      JWT_SECRET,
-      { expiresIn: '1d' } // optional expiry
+      user,
+      JWT_SECRET
     )
 
     // Set cookies properly
@@ -148,6 +143,12 @@ const logoutUser = async (req, res) => {
   }
 }
 
+const protectedRoute=async(req,res)=>{
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Not logged in' });
+  }
+  res.json({ success: true, user: req.user });
 
+}
 
-module.exports = { registerUser, loginUser, logoutUser };
+module.exports = { registerUser, loginUser, logoutUser, protectedRoute };
