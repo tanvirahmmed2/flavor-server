@@ -39,21 +39,30 @@ const addProduct = async (req, res) => {
 
 const removeProduct = async (req, res) => {
   try {
-    const {id}= req.body
-    const product = await Product.findOne({_id: id })
+    const { id } = req.body;
+    const product = await Product.findOne({ _id: id });
+
     if (!product) {
-      res.status(500).send("product id didn't match with any product")
+      return res.status(404).send({ success: false, message: "Product ID didn't match with any product" });
     }
-    if(!product.image_id){
-      res.status(500).send("Product image not found")
+
+    if (!product.image_id) {
+      return res.status(404).send({ success: false, message: "Product image not found" });
     }
-    await cloudinary.uploader.destroy(product.image_id)
-    await Product.findOneAndDelete({_id: id})
-    res.status(200).send("Product removed successfully");
+
+    // Delete image from Cloudinary
+    await cloudinary.uploader.destroy(product.image_id);
+
+    // Delete product from DB
+    await Product.findOneAndDelete({ _id: id });
+
+    res.status(200).send({ success: true, message: "Product removed successfully" });
   } catch (error) {
-    res.status(500).send("product remove process failed")
+    console.error(error);
+    res.status(500).send({ success: false, message: "Product remove process failed" });
   }
-}
+};
+
 
 
 
