@@ -121,17 +121,33 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   try {
-    res.clearCookie("user_token", { path: "/" });
-    res.clearCookie("admin_token", { path: "/" });
-    res.status(200).send({ success: true, message: "Successfully Logged out" });
-
-  } catch (error) {
-    res.status(400).send({
-      success: false,
-      message: 'logout failed'
+    // Clear cookies if they exist
+    res.clearCookie("user_token", {
+      httpOnly: true,
+      secure: true,     // set true if using HTTPS
+      sameSite: "strict",
+      path: "/",
+    })
+    res.clearCookie("admin_token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      path: "/",
     })
 
+    return res.status(200).json({
+      success: true,
+      message: "Successfully logged out"
+    })
+  } catch (error) {
+    console.error("Logout error:", error)
+    return res.status(400).json({
+      success: false,
+      message: "Logout failed"
+    })
   }
-
 }
+
+
+
 module.exports = { registerUser, loginUser, logoutUser };
