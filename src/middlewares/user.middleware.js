@@ -2,49 +2,49 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
 
+// Middleware to check if user is logged in
 const LoggedIn = async (req, res, next) => {
-    try {
-        const token = req.cookies.user_token || req.cookies.admin_token;
-        if (!token) {
-            return res.status(500).send("token not found, login first")
-        }
-        const decoded = await jwt.verify(token, process.env.JWT_SECRET)
-        if (!decoded) {
-            return res.status(404).send({
-                success: false,
-                message: 'invalid token'
-            });
-        }
-        const user = await User.findOne({ email: decoded.email })
-        if (!user) {
-            return res.status(404).send({
-                success: false,
-                message: 'User not found'
-            });
-        }
-        req.user = decoded
-        next()
-    } catch (error) {
-        res.status(500).send("authentication failed")
+  try {
+    const token = req.cookies.user_token || req.cookies.admin_token
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Login required" })
     }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    if (!decoded) {
+      return res.status(401).json({ success: false, message: "Invalid token" })
+    }
+
+    // Optionally, fetch full user document
+    const user = await User.findOne({ email: decoded.email })
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" })
+    }
+
+    req.user = user  // store full user document
+    next()
+  } catch (error) {
+    res.status(401).json({ success: false, message: "Authentication failed", error: error.message })
+  }
 }
 
-
-const isAdmin = async (req, res, next) => {
-    try {
-        const user= req.user
-        if(!user.isAdmin){
-           return res.status(200).send("You're not an admin")
-        }
-        next()
-
-    } catch (error) {
-        res.status(500).send(error + "admin verfification failed")
-
+// Middleware to check if user is admin
+const isAdmin = (req, res, next) => {
+  try {
+    const user = req.user
+    if(!user){
+        return res.status(403).json({ success: false, message: "no user found" })
     }
+    if (!user.isAdmin) {
+      return res.status(403).json({ success: false, message: "Access denied. Admins only." })
+    }
+    next()
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Admin verification failed", error: error.message })
+  }
 }
 
 module.exports = {
-    LoggedIn,
-    isAdmin,
+  LoggedIn,
+  isAdmin,
 }

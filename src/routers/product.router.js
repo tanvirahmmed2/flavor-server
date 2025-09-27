@@ -1,7 +1,7 @@
 const express = require('express')
 const multer= require('multer')
-const { addProduct } = require('../controllers/product.controller');
-const { isAdmin } = require('../middlewares/user.middleware');
+const { addProduct, removeProduct } = require('../controllers/product.controller');
+const { isAdmin, LoggedIn } = require('../middlewares/user.middleware');
 const Product = require('../models/product.model');
 
 
@@ -27,7 +27,8 @@ productRouter.get('/',  async(req,res)=>{
 
 
 
-productRouter.post('/addproduct', isAdmin, upload.single('image'), addProduct)
+productRouter.post('/addproduct',LoggedIn, isAdmin, upload.single('image'), addProduct)
+productRouter.post('/removeproduct',LoggedIn, isAdmin, removeProduct)
 
 
 
