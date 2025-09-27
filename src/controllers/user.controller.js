@@ -123,7 +123,7 @@ const logoutUser = async (req, res) => {
   try {
     res.clearCookie("user_token", { path: "/" });
     res.clearCookie("admin_token", { path: "/" });
-    res.status(200).send({ success: true, message: "Logged out" });
+    res.status(200).send({ success: true, message: "Successfully Logged out" });
 
   } catch (error) {
     res.status(400).send({
