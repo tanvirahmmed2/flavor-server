@@ -2,7 +2,6 @@ require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const User = require('../models/user.model')
 
-// Middleware to check if user is logged in
 const LoggedIn = async (req, res, next) => {
   try {
     const token = req.cookies.user_token || req.cookies.admin_token
@@ -15,20 +14,19 @@ const LoggedIn = async (req, res, next) => {
       return res.status(401).json({ success: false, message: "Invalid token" })
     }
 
-    // Optionally, fetch full user document
+   
     const user = await User.findOne({ email: decoded.email })
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" })
     }
 
-    req.user = user  // store full user document
+    req.user = user  
     next()
   } catch (error) {
     res.status(401).json({ success: false, message: "Authentication failed", error: error.message })
   }
 }
 
-// Middleware to check if user is admin
 const isAdmin = (req, res, next) => {
   try {
     const user = req.user
@@ -38,6 +36,7 @@ const isAdmin = (req, res, next) => {
     if (!user.isAdmin) {
       return res.status(403).json({ success: false, message: "Access denied. Admins only." })
     }
+    req.user = user 
     next()
   } catch (error) {
     res.status(500).json({ success: false, message: "Admin verification failed", error: error.message })
