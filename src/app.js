@@ -3,6 +3,8 @@ const cors = require('cors')
 const cookieParser = require("cookie-parser")
 const productRouter = require('./routers/product.router')
 const userRouter = require('./routers/user.router')
+const orderRouter = require('./routers/order.router')
+const reserveRouter = require('./routers/reserve.router')
 
 const app = express()
 
@@ -21,5 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/product', productRouter)
 app.use('/user', userRouter)
+app.use('/order', orderRouter)
+app.use('/reserve', reserveRouter)
 
 module.exports = app
