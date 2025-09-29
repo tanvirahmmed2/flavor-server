@@ -11,9 +11,9 @@ const app = express()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
-    origin: 'http://localhost:3000', // your React frontend URL
-    credentials: true,               // allow cookies
-}))
+    origin: "http://localhost:3000", // React dev server
+    credentials: true,
+}));
 app.use(cookieParser())
 
 app.get('/', (req, res) => {
