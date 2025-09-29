@@ -1,6 +1,6 @@
 const Reserve= require('../models/reserve.model')
 
-const getReserve=async()=>{
+const getReserve=async(req,res)=>{
     try {
         const reserve= await Reserve.find({})
         if(!reserve){
