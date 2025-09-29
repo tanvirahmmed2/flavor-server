@@ -6,7 +6,7 @@ const { LoggedIn, isAdmin } = require('../middlewares/user.middleware')
 const orderRouter=express.Router()
 
 
-orderRouter.get('/', LoggedIn, isAdmin, getOrder)
+orderRouter.get('/getorders', LoggedIn, isAdmin, getOrder)
 
 
 module.exports= orderRouter

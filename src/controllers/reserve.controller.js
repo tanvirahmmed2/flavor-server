@@ -6,7 +6,10 @@ const getReserve = async (req, res) => {
         if (!reserve) {
             res.status(500).send('no reservation found')
         }
-        res.status(201).send(reserve)
+        res.status(201).send({
+            success: true,
+            payload: reserve
+        })
     } catch (error) {
         res.status(500).send(error)
 
