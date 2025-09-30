@@ -24,6 +24,10 @@ const orderSchema= new mongoose.Schema({
     paymethod:{
         type:String,
         required: true
+    },
+    details:{
+        type: Array,
+        required: true
     }
 })
 

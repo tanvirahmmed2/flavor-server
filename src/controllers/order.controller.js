@@ -1,4 +1,4 @@
-const Order= require('../models/order.model')
+const Order = require('../models/order.model')
 
 
 
@@ -16,17 +16,35 @@ const getOrder = async (req, res) => {
     }
 };
 
-const orderItem=async(req,res)=>{
+const orderItem = async (req, res) => {
     try {
-        
+        const { userId, name, details, deliverymethod, paymethod, totalAmount, phone } = req.body
+        if (!userId || !name || !details || !deliverymethod || !paymethod || !totalAmount || !phone) {
+
+            return res.status(403).send({
+                success: false,
+                message: 'Order details missing'
+            })
+        }
+        const newOrder = new Order({ userId, name, details, deliverymethod, paymethod, totalAmount, phone, address: req.body.address })
+        await newOrder.save()
+
+        res.status(203).send({
+            success: true,
+            message: 'Successfully order placed'
+        })
+
     } catch (error) {
-        res.status(500).send(error)
+        res.status(500).send({
+            success: false,
+            message:' failed to place an order'
+        })
     }
 }
 
 
 
-module.exports={
+module.exports = {
     getOrder,
     orderItem
 }
