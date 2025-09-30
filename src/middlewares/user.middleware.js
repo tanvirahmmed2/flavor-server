@@ -4,7 +4,7 @@ const User = require('../models/user.model')
 
 const LoggedIn = async (req, res, next) => {
   try {
-    const token = req.cookies.user_token
+    const token = req.cookies.user_token || req.cookies.admin_token 
     if (!token) {
       return res.status(401).json({ success: false, message: "Login required" })
     }
