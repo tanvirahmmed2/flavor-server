@@ -73,7 +73,7 @@ const loginUser = async (req, res) => {
     }
 
     // Only keep safe fields
-    const user = await User.findOne({email:email}).select({password: 0}).lean()
+    const user = await User.findOne({ email: email }).select({ password: 0 }).lean()
 
     // Sign token with limited payload
     const token = jwt.sign(
@@ -82,19 +82,19 @@ const loginUser = async (req, res) => {
     )
 
     // Set cookies properly
+    const cookieOptions = {
+      httpOnly: true,
+      secure: false,   // only true with HTTPS
+      sameSite: "lax",
+      path: "/"
+    };
+
     if (user.isAdmin) {
-      res.cookie("admin_token", token, {
-        httpOnly: true,   // safer
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict"
-      })
+      res.cookie("admin_token", token, cookieOptions);
     } else {
-      res.cookie("user_token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict"
-      })
+      res.cookie("user_token", token, cookieOptions);
     }
+
 
     // Also send token in response (so frontend can use localStorage if needed)
     res.status(200).json({
@@ -143,7 +143,7 @@ const logoutUser = async (req, res) => {
   }
 }
 
-const protectedRoute=async(req,res)=>{
+const protectedRoute = async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ success: false, message: 'Not logged in' });
   }
