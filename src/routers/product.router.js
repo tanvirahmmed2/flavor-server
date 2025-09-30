@@ -19,7 +19,10 @@ productRouter.get('/',  async(req,res)=>{
         if(!products){
             return res.status(500).send(`No product found`)
         }
-        res.status(200).send({product: products})
+        res.status(200).send({
+            success: true,
+            product: products
+        })
     } catch (error) {
         res.status(500).send(error + `Product fetching failed`)
     }
