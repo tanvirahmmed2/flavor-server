@@ -29,7 +29,7 @@ const orderItem = async (req, res) => {
                 message: 'Order details missing'
             })
         }
-        const newOrder = new Order({ userId, name, details, deliverymethod, paymethod, totalAmount, phone, address: req.body.address })
+        const newOrder = new Order({ userId, name, details, deliverymethod, paymethod, totalAmount, phone, email, address: req.body.address })
         await newOrder.save()
 
         res.status(203).send({
