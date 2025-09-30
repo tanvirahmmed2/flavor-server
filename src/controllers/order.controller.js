@@ -16,8 +16,17 @@ const getOrder = async (req, res) => {
     }
 };
 
+const orderItem=async(req,res)=>{
+    try {
+        
+    } catch (error) {
+        res.status(500).send(error)
+    }
+}
+
 
 
 module.exports={
-    getOrder
+    getOrder,
+    orderItem
 }
