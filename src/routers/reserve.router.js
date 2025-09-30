@@ -7,7 +7,7 @@ const reserveRouter=express.Router()
 
 reserveRouter.get('/',LoggedIn, isAdmin, getReserve)
 reserveRouter.post('/book', LoggedIn, reserveSeat)
-reserveRouter.post('/delete', LoggedIn, isAdmin, deletReserve)
+reserveRouter.post('/delete', isAdmin, deletReserve)
 
 
 

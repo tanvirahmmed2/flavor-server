@@ -11,7 +11,7 @@ const userRouter= express.Router()
 userRouter.post('/signup', registerUser)
 userRouter.post('/signin', loginUser)
 userRouter.post('/signout',LoggedIn, logoutUser)
-userRouter.get('/protected', LoggedIn, isAdmin,  protectedRoute)
+userRouter.get('/protected', isAdmin,  protectedRoute)
 
 userRouter.get('/protecteduser', LoggedIn,  protectedRoute)
 

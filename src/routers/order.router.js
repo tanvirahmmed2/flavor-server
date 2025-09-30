@@ -1,12 +1,12 @@
 const express= require('express')
 const { getOrder } = require('../controllers/order.controller')
-const { LoggedIn, isAdmin } = require('../middlewares/user.middleware')
+const {  isAdmin } = require('../middlewares/user.middleware')
 
 
 const orderRouter=express.Router()
 
 
-orderRouter.get('/getorders', LoggedIn, isAdmin, getOrder)
+orderRouter.get('/getorders',  isAdmin, getOrder)
 
 
 

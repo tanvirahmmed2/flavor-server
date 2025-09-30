@@ -114,6 +114,8 @@ const loginUser = async (req, res) => {
 }
 
 
+
+
 const logoutUser = async (req, res) => {
   try {
     // Clear cookies if they exist
