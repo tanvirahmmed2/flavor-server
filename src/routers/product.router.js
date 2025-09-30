@@ -25,8 +25,6 @@ productRouter.get('/',  async(req,res)=>{
     }
 })
 
-
-
 productRouter.post('/addproduct',LoggedIn, isAdmin, upload.single('image'), addProduct)
 productRouter.post('/removeproduct',LoggedIn, isAdmin, removeProduct)
 
