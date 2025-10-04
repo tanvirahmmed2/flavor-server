@@ -10,10 +10,14 @@ const app = express()
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors({// React dev server
-    origin: 'https://flavorbd.netlify.app',
+app.use(cors({
+    origin: [
+        'https://flavorbd.netlify.app',
+        'https://flavorbd-admin.netlify.app'
+    ],
     credentials: true,
 }));
+
 app.use(cookieParser())
 
 app.get('/', (req, res) => {
