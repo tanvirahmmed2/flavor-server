@@ -10,8 +10,8 @@ const app = express()
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(cors({
-    origin: "http://localhost:3000", // React dev server
+app.use(cors({// React dev server
+    origin: 'https://flavorbd.netlify.app',
     credentials: true,
 }));
 app.use(cookieParser())
