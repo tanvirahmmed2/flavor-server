@@ -11,10 +11,7 @@ const app = express()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cors({
-    origin: [
-        'https://flavorbd.netlify.app',
-        'https://flavorbd-admin.netlify.app'
-    ],
+    origin: 'https://flavorbd.netlify.app',
     credentials: true,
 }));
 
