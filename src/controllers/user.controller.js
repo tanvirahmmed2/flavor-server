@@ -84,7 +84,7 @@ const loginUser = async (req, res) => {
     // Set cookies properly
     const cookieOptions = {
       httpOnly: true,
-      secure: false,   // only true with HTTPS
+      secure: true,   // only true with HTTPS
       sameSite: "lax",
       path: "/"
     };
