@@ -83,9 +83,9 @@ const loginUser = async (req, res) => {
 
     // Set cookies properly
     const cookieOptions = {
-      httpOnly: true,
-      secure: true,   // only true with HTTPS
-      sameSite: "lax",
+      httpOnly: true,      // Prevents client-side JS from accessing the cookie
+      secure: true,         // Ensures cookie is sent only over HTTPS
+      sameSite: "none",
       path: "/"
     };
 
@@ -120,9 +120,9 @@ const logoutUser = async (req, res) => {
   try {
     // Clear cookies if they exist
     res.clearCookie("user_token", {
-      httpOnly: true,
-      secure: true,     // set true if using HTTPS
-      sameSite: "strict",
+      httpOnly: true,      // Prevents client-side JS from accessing the cookie
+      secure: true,         // Ensures cookie is sent only over HTTPS
+      sameSite: "none",
       path: "/",
     })
     res.clearCookie("admin_token", {
